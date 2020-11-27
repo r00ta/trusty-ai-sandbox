@@ -1,0 +1,916 @@
+---
+openapi: 3.0.1
+info:
+  title: Generated API
+  version: "1.0"
+paths:
+  /executions:
+    get:
+      summary: Gets the execution headers
+      description: Gets the execution headers.
+      parameters:
+      - name: from
+        in: query
+        description: Start datetime for the lookup. Date in the format "yyyy-MM-dd"
+        required: false
+        schema:
+          default: yesterday
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return.
+        required: false
+        schema:
+          format: int32
+          default: 100
+          type: integer
+      - name: offset
+        in: query
+        description: Offset for the pagination.
+        required: false
+        schema:
+          format: int32
+          default: 0
+          type: integer
+      - name: search
+        in: query
+        description: Execution ID prefix to be matched
+        required: false
+        schema:
+          default: ""
+          type: string
+      - name: to
+        in: query
+        description: End datetime for the lookup. Date in the format "yyyy-MM-dd"
+        required: false
+        schema:
+          default: now
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Returns the execution headers.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  headers:
+                    $ref: '#/components/schemas/ListExecutionHeaderResponse'
+                  limit:
+                    format: int32
+                    type: integer
+                  offset:
+                    format: int32
+                    type: integer
+                  total:
+                    format: int32
+                    type: integer
+  /executions/decisions:
+    get:
+      summary: Gets the execution headers of the decisions only. To be implemented
+      description: Gets the execution headers of the decisions only.
+      parameters:
+      - name: from
+        in: query
+        description: Start datetime for the lookup. Date in the format "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        required: false
+        schema:
+          default: yesterday
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return.
+        required: false
+        schema:
+          format: int32
+          default: 100
+          type: integer
+      - name: offset
+        in: query
+        description: Offset for the pagination.
+        required: false
+        schema:
+          format: int32
+          default: 0
+          type: integer
+      - name: search
+        in: query
+        description: Execution ID prefix to be matched
+        required: false
+        schema:
+          default: ""
+          type: string
+      - name: to
+        in: query
+        description: End datetime for the lookup. Date in the format "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        required: false
+        schema:
+          default: now
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Returns the execution headers of decisions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  headers:
+                    $ref: '#/components/schemas/ListExecutionHeaderResponse'
+                  limit:
+                    format: int32
+                    type: integer
+                  offset:
+                    format: int32
+                    type: integer
+                  total:
+                    format: int32
+                    type: integer
+  /executions/decisions/{key}:
+    get:
+      summary: Gets The decision header with details.
+      description: Gets the decision detail header.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the execution that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the decision detail header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  executionDate:
+                    $ref: '#/components/schemas/Date'
+                  executionId:
+                    type: string
+                  executionSucceeded:
+                    type: boolean
+                  executionType:
+                    $ref: '#/components/schemas/ExecutionEnum'
+                  executorName:
+                    type: string
+  /executions/decisions/{key}/featureImportance:
+    get:
+      summary: Returns the feature importance for a decision.
+      description: Returns the feature importance for a particular decision calculated
+        using the lime algorithm.
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the local explanation of a decision.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  executionId:
+                    type: string
+                  featureImportance:
+                    $ref: '#/components/schemas/ListFeatureImportance'
+  /executions/decisions/{key}/inputs:
+    get:
+      summary: Gets the decision inputs.
+      description: Gets the decision inputs.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the execution that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the decision inputs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inputs:
+                    $ref: '#/components/schemas/MapStringObject'
+  /executions/decisions/{key}/model:
+    get:
+      summary: Gets the model that evaluated the execution.
+      description: Gets the model that evaluated the execution.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the execution that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the model that evaluated the execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deploymentDate:
+                    type: string
+                  model:
+                    type: string
+                  modelId:
+                    type: string
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                  serviceIdentifier:
+                    $ref: '#/components/schemas/ServiceIdentifier'
+                  type:
+                    type: string
+  /executions/decisions/{key}/outcomes:
+    get:
+      summary: Gets the decision outcomes.
+      description: Gets the decision outcomes.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the execution that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the decision outcomes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  header:
+                    $ref: '#/components/schemas/ExecutionHeaderResponse'
+                  outcomes:
+                    $ref: '#/components/schemas/ListOutcomeModel'
+  /executions/decisions/{key}/outcomes/{outcomeId}:
+    get:
+      summary: Gets the decision outcomes with model structure.
+      description: Gets the decision outcomes in a structure that reflects the dmn
+        model structure.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the execution that needs to be fetched
+        required: true
+        schema:
+          type: string
+      - name: outcomeId
+        in: path
+        description: ID of the outcome that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the decision outcome detail.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evaluationStatus:
+                    $ref: '#/components/schemas/OutcomeEvaluationStatusModel'
+                  hasErrors:
+                    type: boolean
+                  messages:
+                    $ref: '#/components/schemas/ListString'
+                  outcomeId:
+                    type: string
+                  outcomeName:
+                    type: string
+                  outcomeResult:
+                    type: object
+                  outcomeInputs:
+                    $ref: '#/components/schemas/ListDecisionInputStructured'
+  /executions/decisions/{key}/structuredInputs:
+    get:
+      summary: Gets the decision inputs with structure.
+      description: Gets the decision inputs with structure.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the execution that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the decision inputs with structure.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inputs:
+                    $ref: '#/components/schemas/ListSingleDecisionInputResponse'
+  /executions/decisions/{key}/structuredOutcomes:
+    get:
+      summary: Gets the decision outcomes with model structure. To be implemented.
+      description: Gets the decision outcomes in a structure that reflects the dmn
+        model structure.
+      parameters:
+      - name: key
+        in: path
+        description: ID of the decision that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Gets the decision outcomes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  header:
+                    $ref: '#/components/schemas/ExecutionHeaderResponse'
+                  outcomes:
+                    $ref: '#/components/schemas/ListOutcomeModelWithInputs'
+  /executions/processes:
+    get:
+      summary: Gets the execution headers of the processes only. To be implemented.
+      description: Gets the execution headers of the processes only.
+      parameters:
+      - name: from
+        in: query
+        description: Start datetime for the lookup. Date in the format "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        required: false
+        schema:
+          default: yesterday
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return.
+        required: false
+        schema:
+          format: int32
+          default: 100
+          type: integer
+      - name: offset
+        in: query
+        description: Offset for the pagination.
+        required: false
+        schema:
+          format: int32
+          default: 0
+          type: integer
+      - name: search
+        in: query
+        description: Execution ID prefix to be matched
+        required: false
+        schema:
+          default: ""
+          type: string
+      - name: to
+        in: query
+        description: End datetime for the lookup. Date in the format "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        required: false
+        schema:
+          default: now
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Returns the execution headers of the processes only.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  headers:
+                    $ref: '#/components/schemas/ListExecutionHeaderResponse'
+                  limit:
+                    format: int32
+                    type: integer
+                  offset:
+                    format: int32
+                    type: integer
+                  total:
+                    format: int32
+                    type: integer
+  /executions/processes/{key}:
+    get:
+      summary: Gets the execution header of the process only. To be implemented.
+      description: Gets the execution header of the processe only.
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionDetailResponse'
+  /executions/search:
+    get:
+      summary: Gets  the execution headers filtered by ID partial match.
+      description: Gets the execution headers filtered by ID partial match.
+      parameters:
+      - name: id
+        in: query
+        description: ID substring to match
+        required: true
+        schema:
+          type: string
+          nullable: false
+      - name: limit
+        in: query
+        description: Maximum number of results to return.
+        required: false
+        schema:
+          format: int32
+          default: 100
+          type: integer
+      - name: offset
+        in: query
+        description: Offset for the pagination.
+        required: false
+        schema:
+          format: int32
+          default: 0
+          type: integer
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Returns the execution headers filtered by ID partial match.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  headers:
+                    $ref: '#/components/schemas/ListExecutionHeaderResponse'
+                  limit:
+                    format: int32
+                    type: integer
+                  offset:
+                    format: int32
+                    type: integer
+                  total:
+                    format: int32
+                    type: integer
+  /global/tabular/pdp:
+    post:
+      parameters:
+      - name: executionId
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /models:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableModelsResponse'
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewDmnModelRequest'
+      responses:
+        "200":
+          description: OK
+  /models/{id}:
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullModelResponse'
+  /models/{id}/decisions:
+    get:
+      summary: Gets the decision structures of the dmn model.
+      description: Gets the decision structures of the dmn model.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Returns the decision structures of the dmn model.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customTypes:
+                    $ref: '#/components/schemas/ListTypeDefinition'
+                  inputData:
+                    $ref: '#/components/schemas/ListInputData'
+  /models/{id}/evaluate:
+    post:
+      parameters:
+      - name: id
+        in: path
+        description: ID of the DMN Model to evaluate.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluationRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationResponse'
+  /models/{id}/inputs:
+    get:
+      summary: Gets the structure of the dmn inputs.
+      description: Gets the structure of the dmn inputs.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            text/plain: {}
+        "200":
+          description: Returns the input structure of the dmn model.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customTypes:
+                    $ref: '#/components/schemas/ListTypeDefinition'
+                  inputData:
+                    $ref: '#/components/schemas/ListInputData'
+  /pmml:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailablePmmlModelsResponse'
+components:
+  schemas:
+    AvailablePmmlModelsResponse:
+      type: object
+      properties:
+        availableModels:
+          type: array
+          items:
+            type: string
+    ExecutionHeaderResponse:
+      type: object
+      properties:
+        executionDate:
+          $ref: '#/components/schemas/Date'
+        executionId:
+          type: string
+        executionSucceeded:
+          type: boolean
+        executionType:
+          $ref: '#/components/schemas/ExecutionEnum'
+        executorName:
+          type: string
+    ListExecutionHeaderResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ExecutionHeaderResponse'
+    Date:
+      format: date
+      type: string
+    ExecutionEnum:
+      enum:
+      - DECISION
+      - PROCESS
+      type: string
+    ExecutionDetailResponse:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/ExecutionHeaderResponse'
+    ServiceIdentifier:
+      type: object
+      properties:
+        artifactId:
+          type: string
+        groupId:
+          type: string
+        version:
+          type: string
+    OutcomeModelWithInputs:
+      type: object
+      properties:
+        evaluationStatus:
+          $ref: '#/components/schemas/OutcomeEvaluationStatusModel'
+        hasErrors:
+          type: boolean
+        messages:
+          $ref: '#/components/schemas/ListString'
+        outcomeId:
+          type: string
+        outcomeName:
+          type: string
+        outcomeResult:
+          type: object
+        outcomeInputs:
+          $ref: '#/components/schemas/ListDecisionInputStructured'
+    ListOutcomeModelWithInputs:
+      type: array
+      items:
+        $ref: '#/components/schemas/OutcomeModelWithInputs'
+    OutcomeEvaluationStatusModel:
+      enum:
+      - EVALUATING
+      - FAILED
+      - NOT_EVALUATED
+      - SKIPPED
+      - SUCCEEDED
+      type: string
+    ListString:
+      type: array
+      items:
+        type: string
+    DecisionInputStructured:
+      type: object
+      properties:
+        components:
+          $ref: '#/components/schemas/ListList'
+        name:
+          type: string
+        typeRef:
+          type: string
+        value:
+          type: object
+        category:
+          type: string
+        id:
+          type: string
+    ListDecisionInputStructured:
+      type: array
+      items:
+        $ref: '#/components/schemas/DecisionInputStructured'
+    ListSingleDecisionInputResponse:
+      type: object
+      properties:
+        empty:
+          type: boolean
+    ListList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ListSingleDecisionInputResponse'
+    MapStringObject:
+      type: object
+      additionalProperties: {}
+    OutcomeModel:
+      type: object
+      properties:
+        evaluationStatus:
+          $ref: '#/components/schemas/OutcomeEvaluationStatusModel'
+        hasErrors:
+          type: boolean
+        messages:
+          $ref: '#/components/schemas/ListString'
+        outcomeId:
+          type: string
+        outcomeName:
+          type: string
+        outcomeResult:
+          type: object
+    ListOutcomeModel:
+      type: array
+      items:
+        $ref: '#/components/schemas/OutcomeModel'
+    SingleDecisionInputResponse:
+      type: object
+      properties:
+        components:
+          $ref: '#/components/schemas/ListList'
+        name:
+          type: string
+        typeRef:
+          type: string
+        value:
+          type: object
+    EvaluationRequestBody:
+      type: object
+      properties:
+        inputs:
+          $ref: '#/components/schemas/MapStringObject'
+    EvaluationResponse:
+      type: object
+      properties:
+        decisions:
+          $ref: '#/components/schemas/MapStringObject'
+    FullModelResponse:
+      type: object
+      properties:
+        creationDate:
+          type: string
+        modelId:
+          type: string
+        modelName:
+          type: string
+        modelNamespace:
+          type: string
+        modelVersion:
+          type: string
+        model:
+          type: string
+    TypeDefinition:
+      type: object
+      properties:
+        components:
+          $ref: '#/components/schemas/ListTypeComponent'
+        isCollection:
+          type: boolean
+        isComposite:
+          type: boolean
+        typeName:
+          type: string
+    ListTypeDefinition:
+      type: array
+      items:
+        $ref: '#/components/schemas/TypeDefinition'
+    InputData:
+      type: object
+      properties:
+        isCollection:
+          type: boolean
+        isComposite:
+          type: boolean
+        name:
+          type: string
+        typeRef:
+          type: string
+    ListInputData:
+      type: array
+      items:
+        $ref: '#/components/schemas/InputData'
+    TypeComponent:
+      type: object
+      properties:
+        constraint:
+          $ref: '#/components/schemas/Constraint'
+        hasConstraint:
+          type: boolean
+        isCollection:
+          type: boolean
+        isComposite:
+          type: boolean
+        name:
+          type: string
+        typeRef:
+          type: string
+    ListTypeComponent:
+      type: array
+      items:
+        $ref: '#/components/schemas/TypeComponent'
+    Constraint:
+      type: object
+      properties:
+        text:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConstraintEnum'
+    ConstraintEnum:
+      enum:
+      - ENUMERATION
+      - EXPRESSION
+      - RANGE
+      type: string
+    ModelDetail:
+      type: object
+      properties:
+        creationDate:
+          type: string
+        modelId:
+          type: string
+        modelName:
+          type: string
+        modelNamespace:
+          type: string
+        modelVersion:
+          type: string
+    ListModelDetail:
+      type: array
+      items:
+        $ref: '#/components/schemas/ModelDetail'
+    AvailableModelsResponse:
+      type: object
+      properties:
+        availableModels:
+          $ref: '#/components/schemas/ListModelDetail'
+    NewDmnModelRequest:
+      type: object
+      properties:
+        creationDate:
+          type: string
+        model:
+          type: string
+        name:
+          type: string
+        nameSpace:
+          type: string
+        version:
+          type: string
+    FeatureImportance:
+      type: object
+      properties:
+        featureName:
+          type: string
+        featureScore:
+          format: double
+          type: number
+    ListFeatureImportance:
+      type: array
+      items:
+        $ref: '#/components/schemas/FeatureImportance'
